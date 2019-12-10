@@ -1,0 +1,218 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * Created by Ankit on 12/9/2019.
+ */
+public class Calculator {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter your expression");
+        String exp=sc.nextLine();
+
+        String set[] = exp.split("");
+        String pat = "\\+|-|/|\\*";
+        Pattern pattern = Pattern.compile(pat);
+        Matcher m = pattern.matcher(exp);
+        int count=0;
+        int countMinus=0;
+        int countMultiply=0;
+        int countDivide=0;
+        List<String> ls = new ArrayList<>();
+        if (Pattern.matches(pat, set[0])) {
+        } else {
+            ls.add(0, "+");
+        }
+
+        int pos = 0;
+        while (m.find()) {
+
+            if (m.start() != pos) {
+                ls.add(exp.substring(pos, m.start()));
+            }
+            ls.add(m.group());
+            pos = m.end();
+            if(m.group().equals("+")) {
+                count++;
+            }else if(m.group().equals("-")){
+                countMinus++;
+            }else if(m.group().equals("*")){
+                countMultiply++;
+            }else if(m.group().equals("/")){
+                countDivide++;
+            }
+
+        }
+
+        if(ls.get(0).equals("+")) {
+            count--;
+        }
+        if(String.valueOf(ls.get(0)).equals("-")){
+            ls.set(0,"+");
+            ls.set(1,String.valueOf(-Integer.parseInt(ls.get(1))));
+        }
+
+
+        List<String> temp = new ArrayList<>();
+        ls.add(exp.substring(pos, exp.length()));
+        System.out.println(ls.toString());
+        int sum ;
+        int tempPos = 0;
+        int mainPos = 0;
+        int flag = 0;
+
+        for (int j = 0; j < countDivide; j++) {
+
+            for (int i = 0; i < ls.size(); i++) {
+
+                if (String.valueOf(ls.get(mainPos)).equals("/") && i != 0 & flag == 0) {
+
+                    sum = Integer.parseInt(ls.get(mainPos - 1)) / Integer.parseInt(ls.get(mainPos + 1));
+                    tempPos--;
+                    temp.set(tempPos, String.valueOf(sum));
+
+                    mainPos += 2;
+                    flag = 1;
+                } else {
+
+                    temp.add(tempPos, ls.get(mainPos));
+                    System.out.println(temp.toString());
+                    mainPos++;
+                }
+
+                if (mainPos >= ls.size()) {
+                    break;
+                }
+                tempPos++;
+            }
+
+            ls = temp;
+            temp = new ArrayList<>();
+            mainPos = 0;
+            tempPos = 0;
+            flag = 0;
+        }
+
+        temp = new ArrayList<>();
+        mainPos = 0;
+        tempPos = 0;
+        flag = 0;
+
+        for (int j = 0; j < countMultiply; j++) {
+
+            for (int i = 0; i < ls.size(); i++) {
+
+                if (String.valueOf(ls.get(mainPos)).equals("*") && i != 0 & flag == 0) {
+
+                    sum = Integer.parseInt(ls.get(mainPos - 1)) * Integer.parseInt(ls.get(mainPos + 1));
+                    tempPos--;
+                    temp.set(tempPos, String.valueOf(sum));
+
+                    mainPos += 2;
+                    flag = 1;
+                } else {
+
+                    temp.add(tempPos, ls.get(mainPos));
+                    System.out.println(temp.toString());
+                    mainPos++;
+                }
+
+                if (mainPos >= ls.size()) {
+                    break;
+                }
+                tempPos++;
+            }
+
+            ls = temp;
+            temp = new ArrayList<>();
+            mainPos = 0;
+            tempPos = 0;
+            flag = 0;
+        }
+
+        temp = new ArrayList<>();
+        mainPos = 0;
+        tempPos = 0;
+        flag = 0;
+
+        for (int j = 0; j < countMinus; j++) {
+
+            for (int i = 0; i < ls.size(); i++) {
+
+                if (String.valueOf(ls.get(mainPos)).equals("-") && i != 0 & flag == 0) {
+
+                    sum = Integer.parseInt(ls.get(mainPos - 1)) - Integer.parseInt(ls.get(mainPos + 1));
+                    tempPos--;
+                    temp.set(tempPos, String.valueOf(sum));
+
+                    if(Integer.parseInt(ls.get(mainPos - 1))>Integer.parseInt(ls.get(mainPos + 1))){
+                        temp.set(tempPos-1,"+");
+                    }
+                    mainPos += 2;
+                    flag = 1;
+                } else {
+
+                    temp.add(tempPos, ls.get(mainPos));
+                    System.out.println(temp.toString());
+                    mainPos++;
+                }
+
+                if (mainPos >= ls.size()) {
+                    break;
+                }
+                tempPos++;
+            }
+
+            ls = temp;
+            temp = new ArrayList<>();
+            mainPos = 0;
+            tempPos = 0;
+            flag = 0;
+        }
+
+        temp = new ArrayList<>();
+        mainPos = 0;
+        tempPos = 0;
+        flag = 0;
+
+        for (int j = 0; j <= count; j++) {
+            for (int i = 0; i < ls.size(); i++) {
+
+                if (String.valueOf(ls.get(mainPos)).equals("+") && i != 0 & flag == 0) {
+                    sum = Integer.parseInt(ls.get(mainPos - 1)) + Integer.parseInt(ls.get(mainPos + 1));
+                    tempPos--;
+                    temp.remove(tempPos);
+                    temp.add(tempPos, String.valueOf(sum));
+                    if((Integer.parseInt(ls.get(mainPos - 1))>Integer.parseInt(ls.get(mainPos + 1)) && ls.get(mainPos-2).equals("-"))){
+
+                        temp.set(tempPos,String.valueOf(-Integer.parseInt(temp.get(tempPos))));
+                    }
+                    mainPos += 2;
+                    flag = 1;
+                } else {
+                    temp.add(tempPos, ls.get(mainPos));
+                    System.out.println(temp.toString());
+                    mainPos++;
+                }
+                if (mainPos >= ls.size()) {
+                    break;
+                }
+                tempPos++;
+            }
+
+            ls = temp;
+            temp = new ArrayList<>();
+            mainPos = 0;
+            tempPos = 0;
+            flag = 0;
+        }
+        System.out.println();
+        System.out.println(ls.toString());
+
+
+    }
+
+}
